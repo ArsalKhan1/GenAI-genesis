@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Signal Decoder
+
+An AI-powered relationship dynamics analyzer that decodes communication patterns and behavioral signals in real-time conversations.
+
+## What It Does
+
+Signal Decoder lets two people chat in a shared room, then runs a hybrid ML + heuristic analysis pipeline to surface:
+
+- **Effort balance** — who's putting in more work
+- **Power dynamics** — relative conversational dominance
+- **Ghosting probability** — likelihood of withdrawal based on response patterns
+- **Manipulation signals** — breadcrumbing, love bombing, boundary violations
+- **Attachment style** — secure, anxious, avoidant, or disorganized
+- **Actionable recommendations** — plain-language advice based on detected patterns
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 16, React 19, Tailwind CSS 4, TypeScript |
+| Real-time | Socket.io 4 |
+| ML Inference | Python 3, scikit-learn (ExtraTreesRegressor), joblib |
+| Vector Storage | Moorcheh API (semantic message history) |
+| AI | Anthropic Claude API |
+
+## Architecture
+
+```
+Browser (React)
+    │  WebSocket (Socket.io)
+    ▼
+Custom Node.js Server (server.ts)
+    ├── Socket.io Server  →  Moorcheh (vector DB)
+    └── POST /api/analyze
+            ├── 1. Retrieve history from Moorcheh
+            ├── 2. Extract 14 rolling features (features.ts)
+            ├── 3. Spawn Python → ML model inference
+            │       └── relationship_signal_model_v4.joblib
+            │           (ExtraTreesRegressor, 123 features → 5 risk scores)
+            └── 4. Return AnalysisResult
+```
+
+The ML model predicts five scores (0–1): `effort_balance`, `ghosting_probability`, `breadcrumbing_risk`, `lovebombing_risk`, `boundary_violation_risk`. If Python is unavailable, the server falls back to rule-based heuristics.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js (v18+) and npm
+- Python 3 with `joblib`, `scikit-learn`, `numpy`, and `pandas`
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env.local` file in the project root:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+MOORCHEH_API_KEY=your_moorcheh_api_key
+ANTHROPIC_API_KEY=your_anthropic_api_key
+```
 
-## Learn More
+### Running
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Development
+npm run dev
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Production
+npm run build
+npm start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Navigate to `http://localhost:3000`.
 
-## Deploy on Vercel
+## Usage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Enter your name and click **Create Room**
+2. Share the room ID with the other person — they enter the same ID to join
+3. Chat in real time
+4. Click **Analyze** to run the relationship signal analysis
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── page.tsx               # Home — room creation / join
+│   └── api/
+│       └── analyze/route.ts   # Analysis endpoint
+├── components/
+│   └── ChatPanel.tsx          # Real-time chat UI
+├── lib/
+│   ├── features.ts            # Rolling feature extraction (14 metrics)
+│   ├── model.ts               # Model orchestration + heuristic fallback
+│   ├── moorcheh.ts            # Vector DB store & retrieval
+│   └── socket-server.ts       # Socket.io room/message management
+├── model/
+│   ├── predict.py             # Python ML inference script
+│   └── relationship_signal_model_v4.joblib
+├── types/
+│   └── index.ts               # Shared TypeScript types
+model_training/
+└── final model.ipynb          # Training notebook (Google Colab)
+server.ts                      # Custom Node.js server entry point
+```
+
+## Model Details
+
+The model was trained on ~3,000 labeled conversations in Google Colab. It uses:
+
+- **23 numeric features** — message counts, response times, initiation ratios, question frequency, gap durations, effort scores
+- **100 TF-IDF/SVD components** — semantic text features extracted with `TfidfVectorizer` + `TruncatedSVD`
+- **MultiOutputRegressor(ExtraTreesRegressor)** — predicts all 5 risk scores simultaneously

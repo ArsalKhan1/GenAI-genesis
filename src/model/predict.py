@@ -19,7 +19,7 @@ warnings.filterwarnings("ignore")
 
 import joblib
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "relationship_signal_model.joblib")
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "relationship_signal_model_v4.joblib")
 bundle = joblib.load(MODEL_PATH)
 
 model         = bundle["model"]

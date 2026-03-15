@@ -38,7 +38,7 @@ export default function ChatPanel({ messages, userName, onSendMessage }: Props) 
         )}
 
         {messages.map((msg, i) => {
-          const isOwn = msg.sender === "user";
+          const isOwn = msg.senderName === userName;
           const prevMsg = messages[i - 1];
           const showName = !prevMsg || prevMsg.senderName !== msg.senderName;
 
