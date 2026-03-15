@@ -81,7 +81,7 @@ export default function RoomPage() {
         const res = await fetch("/api/analyze", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages, userName, otherName }),
+          body: JSON.stringify({ roomId, messages, userName, otherName }),
         });
         if (!res.ok) throw new Error(await res.text());
         const result = await res.json();
@@ -101,43 +101,62 @@ export default function RoomPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="h-screen bg-[#080812] flex flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+      <header className="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between shrink-0 z-10">
         <div className="flex items-center gap-3">
-          <h1 className="font-bold text-gray-900">💬 Signal Decoder</h1>
-          <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-mono">
-            Room: {roomId}
+          <span className="text-base font-bold bg-linear-to-r from-violet-300 to-purple-300 bg-clip-text text-transparent">
+            Signal Decoder
+          </span>
+          <span className="text-xs bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-1 rounded-full font-mono">
+            {roomId}
           </span>
         </div>
-        <div className="flex items-center gap-3">
+
+        <div className="flex items-center gap-2">
           {participants.length > 0 && (
-            <span className="text-xs text-gray-500">
-              {participants.join(" & ")}
-            </span>
+            <div className="hidden sm:flex items-center gap-1.5 mr-1">
+              {participants.map((p) => (
+                <span
+                  key={p}
+                  className="text-xs bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-1 rounded-full"
+                >
+                  {p}
+                </span>
+              ))}
+            </div>
           )}
+
           <button
             onClick={toggleAnalyze}
-            className={`text-xs px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 font-medium ${
+            className={`text-xs px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 font-medium ${
               analyzeEnabled
-                ? "bg-purple-600 text-white hover:bg-purple-700"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ? "bg-violet-600 text-white shadow-lg shadow-violet-900/40"
+                : "bg-slate-800 text-slate-400 border border-slate-700 hover:border-slate-600 hover:text-slate-200"
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${analyzeEnabled ? "bg-white" : "bg-gray-400"}`} />
-            {analyzeEnabled ? "Analyzing ON" : "Analyze"}
+            {isAnalyzing ? (
+              <svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
+            ) : (
+              <span className={`w-1.5 h-1.5 rounded-full ${analyzeEnabled ? "bg-white" : "bg-slate-600"}`} />
+            )}
+            {analyzeEnabled ? "Analyzing" : "Analyze"}
           </button>
+
           <button
             onClick={copyRoomLink}
-            className="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-200 transition-colors"
+            className="text-xs bg-slate-800 text-slate-400 border border-slate-700 hover:border-slate-600 hover:text-slate-200 px-3 py-1.5 rounded-lg transition-all"
           >
-            {copied ? "Copied!" : "Share Room"}
+            {copied ? "Copied!" : "Share"}
           </button>
         </div>
       </header>
 
       {/* Main content */}
-      <div className="flex-1 flex gap-0 overflow-hidden">
+      <div className="flex-1 flex overflow-hidden">
         <ChatPanel
           messages={messages}
           userName={userName}

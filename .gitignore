@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# large model files
+*.joblib
+*.pkl
+*.h5
+*.pt
+*.bin

@@ -1,6 +1,7 @@
 import { Server as SocketIOServer } from "socket.io";
 import { Server as HTTPServer } from "http";
 import { Message } from "@/types";
+import { storeMessageEvent } from "@/lib/moorcheh";
 
 interface Room {
   messages: Message[];
@@ -48,6 +49,9 @@ export function initSocketServer(httpServer: HTTPServer) {
 
         room.messages.push(message);
         io.to(roomId).emit("new_message", message);
+
+        // Store event in Moorcheh (fire-and-forget)
+        storeMessageEvent(roomId, message);
       }
     );
 
