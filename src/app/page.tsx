@@ -36,7 +36,7 @@ export default function Home() {
           </div>
           <h1 className="text-4xl font-bold mb-3">
             <span className="bg-linear-to-r from-violet-300 via-purple-300 to-fuchsia-300 bg-clip-text text-transparent">
-              Signal Decoder
+              Between The Lines
             </span>
           </h1>
           <p className="text-slate-400 text-sm leading-relaxed max-w-xs mx-auto">

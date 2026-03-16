@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Signal Decoder",
+  title: "Between The Lines",
   description: "AI-powered relationship signal analyzer",
 };
 

@@ -106,7 +106,7 @@ export default function RoomPage() {
       <header className="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between shrink-0 z-10">
         <div className="flex items-center gap-3">
           <span className="text-base font-bold bg-linear-to-r from-violet-300 to-purple-300 bg-clip-text text-transparent">
-            Signal Decoder
+            Between The Lines
           </span>
           <span className="text-xs bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-1 rounded-full font-mono">
             {roomId}

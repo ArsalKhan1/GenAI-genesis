@@ -1,10 +1,10 @@
-# Signal Decoder
+# Between The Lines
 
 An AI-powered relationship dynamics analyzer that decodes communication patterns and behavioral signals in real-time conversations.
 
 ## What It Does
 
-Signal Decoder lets two people chat in a shared room, then runs a hybrid ML + heuristic analysis pipeline to surface:
+Between The Lines lets two people chat, then runs a hybrid ML + heuristic analysis pipeline to surface:
 
 - **Effort balance** — who's putting in more work
 - **Power dynamics** — relative conversational dominance
