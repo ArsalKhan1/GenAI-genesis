@@ -116,3 +116,8 @@ The model was trained on ~3,000 labeled conversations in Google Colab. It uses:
 - **23 numeric features** — message counts, response times, initiation ratios, question frequency, gap durations, effort scores
 - **100 TF-IDF/SVD components** — semantic text features extracted with `TfidfVectorizer` + `TruncatedSVD`
 - **MultiOutputRegressor(ExtraTreesRegressor)** — predicts all 5 risk scores simultaneously
+
+
+## Deployment
+
+Deployed on Railway: [https://genai-genesis-production.up.railway.app/](https://genai-genesis-production.up.railway.app/)
